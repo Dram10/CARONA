@@ -104,6 +104,13 @@ drop trigger if exists check_seat on public.bookings;
 create trigger check_seat before insert on public.bookings
   for each row execute function public.check_seat();
 
+-- ---------- Permissões básicas ----------
+-- Projetos novos do Supabase não liberam as tabelas automaticamente para o app.
+-- Isto libera o acesso; quem pode ver e mudar cada linha é decidido pelas regras abaixo.
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on public.profiles, public.rides, public.bookings, public.requests to authenticated;
+grant execute on function public.is_coord() to authenticated;
+
 -- ---------- Regras de acesso (Row Level Security) ----------
 
 alter table public.profiles enable row level security;
